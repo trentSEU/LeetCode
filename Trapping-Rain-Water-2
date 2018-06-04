@@ -1,7 +1,7 @@
 Note: from outside to inside, get one cell with the shortest height 
 everytime as current cell, use current cell to count the height of 
 the four unvisited cells(surface[nx][ny] = max(curr.height, heightMap[nx][ny]);)
-and the water could be trapped(ans += max(curr.height - heightMap[nx][ny], 0);)
+and the water could be trapped(ans += max(curr.height - heightMap[nx][ny], 0);) 
 
 class Solution {
 public:
