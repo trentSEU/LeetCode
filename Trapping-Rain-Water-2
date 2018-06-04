@@ -1,0 +1,70 @@
+Note: from outside to inside, get one cell with the shortest height 
+everytime as current cell, use current cell to count the height of 
+the four unvisited cells(surface[nx][ny] = max(curr.height, heightMap[nx][ny]);)
+and the water could be trapped(ans += max(curr.height - heightMap[nx][ny], 0);)
+
+class Solution {
+public:
+    struct cell {
+        int x = 0;
+        int y = 0;
+        int height = 0;
+        
+        cell(int x, int y, int height) {
+            this -> x = x;
+            this -> y = y;
+            this -> height = height;
+        }
+        
+        // descending order
+        bool operator < (const cell& cell_) const {
+            return height > cell_.height;
+        }
+    };
+    
+    int trapRainWater(vector<vector<int>>& heightMap) {
+        if (heightMap.size() == 0) return 0;
+        int m = heightMap.size(), n = heightMap[0].size(), ans = 0;
+        surface = vector<vector<int>>(m, vector<int>(n, -1));
+        
+        for (int i = 0; i < m; i++) {
+            surface[i][0] = heightMap[i][0]; 
+            surface[i][n - 1] = heightMap[i][n - 1];
+            cell cell1 = {i, 0, surface[i][0]};
+            cell cell2 = {i, n - 1, surface[i][n - 1]};
+            pque.push(cell1);
+            pque.push(cell2);
+        }
+            
+        for (int i = 0; i < n; i++) {
+            surface[0][i] = heightMap[0][i];
+            surface[m - 1][i] = heightMap[m - 1][i];
+            cell cell1 = {0, i, surface[0][i]};
+            cell cell2 = {m - 1, i, surface[m - 1][i]};
+            pque.push(cell1);
+            pque.push(cell2);
+        }
+        
+        while (!pque.empty()) {
+            cell curr = pque.top();
+            pque.pop();
+            for (int i = 0; i < 4; i++) {
+                int nx = curr.x + dir[i].first, ny = curr.y + dir[i].second;
+                if (nx > 0 && nx < m - 1 && ny > 0 && ny < n -1 && surface[nx][ny] == -1) {
+                    ans += max(curr.height - heightMap[nx][ny], 0);
+                    surface[nx][ny] = max(curr.height, heightMap[nx][ny]);
+                    cell cell_ = {nx, ny, surface[nx][ny]};
+                    pque.push(cell_);
+                }
+            }
+        }
+        
+        return ans;
+    }
+    
+private:
+    vector<pair<int, int>> dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    priority_queue<cell> pque;
+    vector<vector<int>> surface;
+    int ans;
+};
