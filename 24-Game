@@ -5,6 +5,8 @@ to nums_ with the rest numbers in nums. We do this recursively until there
 is only one element in nums, then we check is it 24.
 parentheses: we choose 2 elements out from the vector to act like they
              are inside the parentheses.
+             
+Link on LeetCode: https://leetcode.com/problems/24-game/description/
 
 ```
 class Solution {
