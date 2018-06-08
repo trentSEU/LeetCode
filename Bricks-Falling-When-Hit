@@ -1,0 +1,116 @@
+NOTE:
+Reverse Time & Union Find
+-Reverse the procedure, make all bricks of hits equal to 0 in grids, 
+ then try to add those bricks back if they are equal to 1 originally,
+ in this case, this problem became somehow similar to the island one,
+ thus we can use Union Find Set to solve it.
+-Union Find Set would keep the size information which indicate the size
+ of the subtree it belongs to, store in the position of the root node of
+ the subtree in the "sz" vector. The union operation would add the size
+ of the smaller subtree to it of the bigger one. Use "top" we can get the
+ sum of the size of the subtrees connecting to the roof(row 0), to implement
+ this, all of the subtrees connecting to the roof are connecting to a virtual
+ node(R * C), thus, by acting "dsu -> top() - preRoof", we can get the newly
+ added size to the roof after the union operation.
+ 
+ Link on LeetCode: https://leetcode.com/problems/bricks-falling-when-hit/solution/
+
+```
+class Solution {
+public:
+    vector<int> hitBricks(vector<vector<int>>& grid, vector<vector<int>>& hits) {
+        int R = grid.size(), C = grid[0].size();
+        A = vector<vector<int>>(grid);
+        // all the positions in hits initialized as 0 in A
+        for (auto p : hits) A[p[0]][p[1]] = 0;
+        
+        // initialize A to construct the existed subtrees before adding bricks
+        DSU *dsu = new DSU(R * C + 1);
+        for (int r = 0; r < R; r++) {
+            for (int c = 0; c < C; c++) {
+                if (A[r][c] == 1) {
+                    int i = r * C + c;
+                    if (r == 0) dsu -> union_(i, R * C);
+                    if (r > 0 && A[r - 1][c] == 1) dsu -> union_(i, (r - 1) * C + c);
+                    if (c > 0 && A[r][c - 1] == 1) dsu -> union_(i, r * C + c - 1);
+                }
+            }
+        }
+        
+        int t = hits.size();
+        vector<int> ans(t--, 0);
+        
+        while (t >= 0) {
+            int r = hits[t][0];
+            int c = hits[t][1];
+            int preRoof = dsu -> top();
+            
+            if (grid[r][c] == 0) 
+                t--;
+            else {
+                // concecting the subtrees
+                int i = r * C + c;
+                for (int k = 0; k < 4; k++) {
+                    int nr = r + dir[k].first, nc = c + dir[k].second;
+                    if (0 <= nr && nr < R && 0 <= nc && nc < C && A[nr][nc] == 1)
+                        dsu -> union_(i, nr * C + nc);
+                }
+                if (r == 0)
+                    dsu -> union_(i, R * C);
+                A[r][c] = 1;
+                cout << preRoof << "-" << dsu -> top() << endl;
+                ans[t--] = max(0, dsu -> top() - preRoof - 1);
+            }
+            
+        }
+        
+        return ans;
+    }
+    
+private:
+    vector<pair<int, int>> dir{{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    vector<vector<int>> A;
+    
+    class DSU {
+    public:
+        DSU(int n) {
+            for (int i = 0; i < n; i++) parent.push_back(i);
+            rank = vector<int>(n, 0);
+            sz = vector<int>(n, 1);
+        }
+
+        int find(int x) {
+            if (parent[x] != x) parent[x] = find(parent[x]);
+            return parent[x];
+        }
+
+        void union_(int x, int y) {
+            int px = find(x), py = find(y);
+            if (px == py) return;
+
+            if (rank[px] < rank[py]) {
+                int tmp = px;
+                px = py;
+                py = tmp;
+            }
+
+            if (rank[px] == rank[py]) rank[px]++;
+
+            parent[py] = px;
+            sz[px] += sz[py];
+        }
+
+        int size(int x) {
+            return sz[find(x)];
+        }
+
+        int top() {
+            return size(sz.size() - 1) - 1;
+        }
+    private:
+        vector<int> parent;
+        vector<int> rank;
+        vector<int> sz;
+    };
+};
+```
