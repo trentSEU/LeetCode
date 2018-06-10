@@ -1,0 +1,54 @@
+NOTE:
+-The sum of small rectangles' area should equal to the area of the perfect rectangle;
+-Count of each point should be even, Count of four corner points should be odd;
+
+Link on LeetCode:
+https://leetcode.com/problems/perfect-rectangle/description/
+
+```
+class Solution {
+public:
+    bool isRectangleCover(vector<vector<int>>& rectangles) {
+        // index
+        int minX = INT_MAX, minY = INT_MAX, maxX = INT_MIN, maxY = INT_MIN, sum = 0;
+        for (auto r : rectangles) {
+            minX = min(minX, r[0]);
+            minY = min(minY, r[1]);
+            maxX = max(maxX, r[2]);
+            maxY = max(maxY, r[3]);
+            
+            string s1 = to_string(r[0]) + " " + to_string(r[1]);
+            string s2 = to_string(r[2]) + " " + to_string(r[3]);
+            string s3 = to_string(r[0]) + " " + to_string(r[3]);
+            string s4 = to_string(r[2]) + " " + to_string(r[1]);
+            
+            if (points.count(s1) > 0) points.erase(s1); 
+            else points.insert(s1);
+            if (points.count(s2) > 0) points.erase(s2); 
+            else points.insert(s2);
+            if (points.count(s3) > 0) points.erase(s3); 
+            else points.insert(s3);
+            if (points.count(s4) > 0) points.erase(s4); 
+            else points.insert(s4);
+            
+            sum += (r[2] - r[0]) * (r[3] - r[1]);
+        }
+        
+        string s1_ = to_string(minX) + " " + to_string(minY);
+        string s2_ = to_string(maxX) + " " + to_string(maxY);
+        string s3_ = to_string(minX) + " " + to_string(maxY);
+        string s4_ = to_string(maxX) + " " + to_string(minY);
+        
+        if (points.size() != 4 || !points.count(s1_) || !points.count(s2_) || !points.count(s3_) || !points.count(s4_)) return false;
+        
+        if ((maxX - minX) * (maxY - minY) != sum) return false;
+        
+        
+        return true;
+    }
+
+private:
+    vector<int> area;
+    set<string> points;
+};
+```
