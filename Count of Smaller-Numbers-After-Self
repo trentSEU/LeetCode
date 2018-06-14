@@ -1,0 +1,44 @@
+NOTE:
+- The idea is from right to left using `insertion sort` to sort the `nums` vector, 
+  for each element, we use binary search to find the position for it, the position 
+  we find is the number of elements less than it. But we need to handle the situation 
+  that there are several equal elements carefully, in this situation, after getting 
+  the position from `binaryFind`, we still need to move the position to the first 
+  equal element.
+  
+Link on LeetCode: https://leetcode.com/problems/count-of-smaller-numbers-after-self/description/
+
+```
+class Solution {
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        vector<int> ans;
+        for (int i = nums.size() - 1; i >= 0; i--) {
+            int pos = binaryFind(nums[i]);
+	    // handle the equal situation
+            while (pos - 1 >= 0 && vec[pos - 1] == nums[i]) pos--;
+            ans.insert(ans.begin(), pos);
+            vec.insert(vec.begin() + pos, nums[i]);
+        }
+        return ans;
+    }
+
+private:
+    vector<int> vec;
+    
+    int binaryFind(int num) {
+        if (vec.size() == 0) return 0;
+        int left = 0, right = vec.size() - 1;
+        while (right - left > 1) {
+            int med = (left + right) / 2;
+            if (vec[med] == num) return med;
+            if (vec[med] > num) right = med;
+            else left = med;
+        }
+        // handle the situation vec.size() == 2
+        if (vec[left] > num) return left;
+        if (num > vec[right]) return right + 1;
+        return right;
+    }
+};
+```
