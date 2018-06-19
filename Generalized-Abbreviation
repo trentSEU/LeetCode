@@ -1,0 +1,53 @@
+NOTE:
+ - Generate all the possible bits by backtracking.
+ - Translate those possible bits to actual word.
+ 
+Link on LeetCode: https://leetcode.com/problems/generalized-abbreviation/description/
+
+class Solution {
+public:
+    vector<string> generateAbbreviations(string word) {
+        string bits(word.size(), '0');
+        getAllBits(bits, 0);
+        for (auto b : bitAns)
+            ans.push_back(translateBits(b, word));
+        return ans;
+    }
+    
+private:
+    vector<string> bitAns;
+    vector<string> ans;
+    
+    void getAllBits(string bits, int pos) {
+        if (pos >= bits.size()) {
+            bitAns.push_back(bits);
+            return;
+        }
+        getAllBits(bits, pos + 1);
+        bits[pos] = '1';
+        getAllBits(bits, pos + 1);
+    }
+    
+    string translateBits(string bits, const string& word) {
+        string res;
+        for (int i = 0; i < bits.size(); i++) {
+            int count = 0;
+            for (int j = i; j < bits.size(); j++) {
+                if (bits[j] == '1') {
+                    count++;
+                    if (j == bits.size() - 1) {
+                        res += to_string(count);
+                        i = j;
+                    }
+                }
+                else {
+                    if (count != 0) res += to_string(count);
+                    res.push_back(word[j]);
+                    i = j;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+};
