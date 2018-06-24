@@ -1,0 +1,67 @@
+NOTE:
+ - This is a Topological problem, for more information about Topological, 
+   you can refer to https://songlee24.github.io/2015/05/07/topological-sorting/
+ - The idea is: (1) Construct the directed graph for the words. (2) Remove 
+   node whose incoming degree is 0 one at a time. 
+
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+        for (auto w : words)
+            for (auto c : w)
+                allLetters.emplace(c);
+        buildGraph(words);
+        string ans = buildPath();
+        return ans;
+    }
+    
+private:
+    vector<vector<bool>> graph = vector<vector<bool>>(26, vector<bool>(26, false));
+    set<char> allLetters;
+    
+    void buildGraph(const vector<string>& words) {
+        if (words.size() <= 1) return;
+        for (int i = 1; i < words.size(); i++) {
+            string s1 = words[i - 1], s2 = words[i];
+            int len = min(s1.size(), s2.size());
+            for (int j = 0; j < len; j++) {
+                if (s1[j] != s2[j]) {
+                    graph[s1[j] - 'a'][s2[j] - 'a'] = true;
+                    break;
+                }
+            }
+        }
+    }
+    
+    string buildPath() {
+        string ans;
+        int len = allLetters.size();
+        while(len-- > 0) {
+            int entry = -1;
+            for (set<char>::iterator it = allLetters.begin(); it != allLetters.end(); it++) {
+                int col = *it - 'a';
+                bool flag = false;
+                for (int row = 0; row < 26; row++) {
+                    flag |= graph[row][col];
+                }
+                // incoming 0
+                // -for multiple nodes with incoming 0 in same level of loop, 
+                //  it doesn't matter to choose which one as entry since there 
+                //  aren't edges between them.
+                if (!flag) {
+                    entry = col;
+                }
+            }
+            if (entry == -1) return "";
+            else {
+                ans.push_back(entry + 'a');
+                for (int i = 0; i < 26; i++) {
+                    graph[entry][i] = false;
+                    graph[i][entry] = false;
+                }
+                allLetters.erase(entry + 'a');
+            }
+        }
+        return ans;
+    }
+};
