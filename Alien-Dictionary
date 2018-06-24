@@ -65,3 +65,67 @@ private:
         return ans;
     }
 };
+
+--------------------------------------------------------------------------------
+Version 2: Using map instead of a 26 * 26 matrix, same idea, remove the node
+           with 0 incoming one at a time.
+           
+class Solution {
+public:
+    string alienOrder(vector<string>& words) {
+        for (auto w : words)
+            for (auto c : w)
+                allLetters.emplace(c);
+        for (set<char>::iterator it = allLetters.begin(); it != allLetters.end(); it++) {
+            graph[*it] = {{}, {}};  // incoming and outgoing
+        }
+        buildGraph(words);
+        string ans = buildPath();
+        return ans;
+    }
+    
+private:
+    set<char> allLetters;
+    map<char, vector<vector<char>>> graph;
+    
+    void buildGraph(const vector<string>& words) {
+        if (words.size() <= 1) return;
+        for (int i = 1; i < words.size(); i++) {
+            string s1 = words[i - 1], s2 = words[i];
+            int len = min(s1.size(), s2.size());
+            for (int j = 0; j < len; j++) {
+                if (s1[j] != s2[j]) {
+                    graph[s1[j]][1].push_back(s2[j]);
+                    graph[s2[j]][0].push_back(s1[j]);
+                    break;
+                }
+            }
+        }
+    }
+    
+    string buildPath() {
+        string ans;
+        while(allLetters.size() > 0) {
+            char entry = '*';
+            for (set<char>::iterator it = allLetters.begin(); it != allLetters.end(); it++) {
+                // incoming 0
+                // for multiple nodes with incoming 0 in same level of loop, 
+                // it doesn't matter to choose which one as entry since there 
+                // aren't edges between them.
+                if (graph[*it][0].size() == 0) {
+                    entry = *it;
+                }
+            }
+            if (entry == '*') return "";
+            else {
+                ans.push_back(entry);
+                for (auto c : graph[entry][1]) {
+                    graph[c][0].erase(find(graph[c][0].begin(), graph[c][0].end(), entry));
+                }
+                allLetters.erase(entry);
+            }
+        }
+        return ans;
+    }
+};
+
