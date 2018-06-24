@@ -1,0 +1,39 @@
+NOTE:
+ - For reflecting upward, y = y + q, if y + q > p, then y = 2 * p - q - y;
+ - For reflecting downward, y = y - q, if y - q < 0, then y = q - y;
+
+class Solution {
+public:
+    int mirrorReflection(int p, int q) {
+        p_ = p, q_ = q;
+        return reflection(0, 0, true);
+    }
+    
+private:
+    int p_, q_;
+    
+    int reflection(int x, int y, bool up) {
+        // cout << x << " " << y << endl;
+        if (x == p_ && y == 0) return 0;
+        if (x == p_ && y == p_) return 1;
+        if (x == 0 && y == p_) return 2;
+        x = x == 0 ? p_ : 0;
+        if (up) {
+            if (y + q_ > p_) {
+                y = 2 * p_ - q_ - y;
+                up = false;
+            }
+            else
+                y = y + q_;
+        }
+        else {
+            if (y - q_ < 0) {
+                y = q_ - y;
+                up = true;
+            }
+            else
+                y = y - q_;
+        }
+        return reflection(x, y, up);
+    }
+};
