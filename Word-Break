@@ -1,0 +1,34 @@
+NOTE:
+ - Using backtracking to check all the possible combination of the words in the wordDict.
+ - Using Joined set to record all the combinations have been tried, skip them next time.
+ 
+Link on LeetCode: https://leetcode.com/problems/word-break/description/
+
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        find = false;
+        Join(s, "", wordDict);
+        return find;
+    }
+    
+private:
+    bool find;
+    set<string> Joined;
+    
+    void Join(const string& target, string cur, const vector<string>& wordDict) {
+        if (cur.size() > target.size()) return;
+        if (cur != target.substr(0, cur.size())) return;
+        if (find) return;
+        if (Joined.count(cur) > 0) return;
+        Joined.emplace(cur);
+        for (auto w : wordDict) {
+            string tmp = cur + w;
+            if (tmp == target) {
+                find = true;
+                return;
+            }
+            Join(target, tmp, wordDict);
+        }
+    }
+};
