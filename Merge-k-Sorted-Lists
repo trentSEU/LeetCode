@@ -1,0 +1,55 @@
+NOTE:
+ - Using struct node to record the index. Thus, each time we pop a node, 
+   we can use the index to find the list where it came from and use the 
+   next ListNode to replace it.
+ - Time complexity: For each node, we need to insert it into the heap 
+   and delete it from the heap, O(lgn) for each operation. Thus, the 
+   time complexity is O(nlgn).
+   
+Link on LeetCode: https://leetcode.com/problems/merge-k-sorted-lists/description/
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+struct node{
+    int x, y;
+    node(int x_, int y_) : x(x_), y(y_) {}
+    bool operator <(const node& n) const {
+        return x > n.x;
+    }
+};
+
+// time complexity for n nodes: O(nlgn)
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        ListNode* res = new ListNode(0);
+        ListNode* ptr = res;
+        priority_queue<node> que;
+        for (int i = 0; i < lists.size(); i++) {
+            if (lists[i] != NULL) {
+                // heap insert O(lgn)
+                que.emplace(node(lists[i] -> val, i));
+                lists[i] = lists[i] -> next;
+            }
+        }
+        while (!que.empty()) {
+            int x = que.top().x, y = que.top().y;
+            // heap delete O(lgn)
+            que.pop();
+            ListNode* n = new ListNode(x);
+            ptr -> next = n;
+            ptr = ptr -> next;
+            if (lists[y] != NULL) {
+                que.emplace(node(lists[y] -> val, y));
+                lists[y] = lists[y] -> next;
+            }
+        }
+        return res -> next;
+    }
+};
