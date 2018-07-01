@@ -1,0 +1,49 @@
+// NOTE: Greedy Algorithm
+//  - vector with r rows c columns
+//  - A[i][j] = 1 << (c - j - 1)
+//  - A[i][0] = 1 << (c - 1) > A[i][1] + ... + A[i][c - 1], thus, all rows begin with 0 should be toggled
+//  - for any column, in order to get a bigger sum, we need to make sure num of 1s > num of 0s, thus, any
+//    column with num of 0s > num of 1s should be toggled
+
+Link on LeetCode: https://leetcode.com/problems/score-after-flipping-matrix/description/
+
+class Solution {
+public:
+    int matrixScore(vector<vector<int>>& A) {
+        for (int i = 0; i < A.size(); i++) {
+            if (A[i][0] == 0) toggleRow(A[i]);
+        }
+        
+        for (int i = 0; i < A[0].size(); i++) {
+            if (haveMoreZero(A, i)) toggleColumn(A, i);
+        }
+        
+        int sum = 0;
+        for (int i = 0; i < A.size(); i++) {
+            int count = 0;
+            for (int j = 0; j < A[0].size(); j++) {
+                if (A[i][j]) count += 1 << (A[0].size() - j - 1);
+            }
+            sum += count;
+        }
+        return sum;
+    }
+    
+private:
+    void toggleRow(vector<int>& row) {
+        for (int i = 0; i < row.size(); i++)
+            row[i] ^= 1;
+    }
+    
+    void toggleColumn(vector<vector<int>>& A, int index) {
+        for (int i = 0; i < A.size(); i++)
+            A[i][index] ^= 1;
+    }
+    
+    bool haveMoreZero(vector<vector<int>>& A, int index) {
+        int count = 0;
+        for (int i = 0; i < A.size(); i++)
+            count += A[i][index];
+        return count <= (A.size() >> 1);
+    }
+};
