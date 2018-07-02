@@ -1,0 +1,27 @@
+//NOTE: simple answer using double pointer.
+
+Link on LeetCode: https://leetcode.com/problems/bulls-and-cows/description/
+
+class Solution {
+public:
+    string getHint(string secret, string guess) {
+        int len = secret.size(), bulls = 0, cows = 0;
+        for (int i = 0; i < len; i++) {
+            if (secret[i] == guess[i]) {
+                bulls++;
+                secret[i] = '*';
+                guess[i] = '&';
+            }
+        }
+        sort(secret.begin(), secret.end());
+        sort(guess.begin(), guess.end());
+        for (int i = 0, j = 0; i < len && j < len; i++) {
+            while (j < len && secret[i] > guess[j])  j++;
+            if (secret[i] == guess[j]) {
+                cows++;
+                j++;
+            }
+        }
+        return to_string(bulls) + "A" + to_string(cows) + "B";
+    }
+};
