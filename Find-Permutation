@@ -1,0 +1,24 @@
+// NOTE: Greedy
+//  - if size is n
+//  - Every time try to using smallest number in [1, ... , n + 1]
+//  - For I, just put the val back to the answer.
+//  - For D, we record the start position of consecutive Ds, every
+//    time we get D, we put the val to the start position.
+
+Link on LeetCode: https://leetcode.com/problems/find-permutation/description/
+
+class Solution {
+public:
+    vector<int> findPermutation(string s) {
+        vector<int> ans = {1};
+        for (int i = 0, dstart = 0; i < s.size(); i++) {
+            int val = i + 2;
+            if (s[i] == 'I')  {
+                ans.push_back(val);
+                dstart = i + 1;
+            }
+            if (s[i] == 'D') ans.insert(ans.begin() + dstart, val);
+        }
+        return ans;
+    }
+};
