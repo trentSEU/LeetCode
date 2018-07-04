@@ -1,0 +1,54 @@
+/* NOTE: Union Find
+*  - For each element in nums, we initialize its value in dict as 1
+*  - For each element n in nums, set their value to 2 , 3 or 4 so that we know whether n - 1 or n + 1 is in dict or not
+*  - Using Function getLen to get the length
+*/
+
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        // initialize the dict for elements in nums
+        for (auto n : nums) dict[n] = 1;
+        // for each element n in dict, 
+        // set value as 2 if n - 1 in dict but n + 1 not
+        // set value as 4 if n + 1 in dict but n - 1 not
+        // set value as 3 if both n - 1 and n + 1 in dict
+        for (auto n : nums) {
+            if (dict[n - 1] != 0 && dict[n + 1] != 0) dict[n] = 3;
+            else if (dict[n - 1] != 0) dict[n] = 2;
+            else if (dict[n + 1] != 0) dict[n] = 4;
+        }
+        
+        maxLen = 0;
+        for (auto p : dict) {
+            len = 0;
+            getLen(p.first);
+        }
+        
+        return maxLen;
+    }
+    
+private:
+    // using unordered_map to ensure O(n) time complexity
+    unordered_map<int, int> dict;
+    int maxLen;
+    int len;
+    
+    void getLen(int k) {
+        if (dict[k] == 0) return;
+        maxLen = max(maxLen, ++len);
+        if (dict[k] == 2) {
+            dict[k] = 0;
+            getLen(k - 1);
+        }
+        else if (dict[k] == 3) {
+            dict[k] = 0;
+            getLen(k - 1);
+            getLen(k + 1);
+        }
+        else if (dict[k] == 4) {
+            dict[k] = 0;
+            getLen(k + 1);
+        }
+    }
+};
