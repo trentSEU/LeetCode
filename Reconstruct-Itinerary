@@ -1,0 +1,37 @@
+/* NOTE:
+*  - Sorting before constructing itinerary so that all the elements in each vector are in lexical order.
+*  - Use k whcih is passed by referrence to find the end of DFS
+*  - For each round of DFS, if we find the vector of a key is empty but k is not 0, which means we have
+*    run into a run way, what we should do is go back and restore the state.
+*/
+
+class Solution {
+public:
+    vector<string> findItinerary(vector<pair<string, string>> tickets) {
+        sort(tickets.begin(), tickets.end());
+        for (auto p : tickets) itinerary[p.first].push_back(p.second);
+        vector<string> ans;
+        int k = tickets.size();
+        findIti("JFK", ans, k);
+        return res;
+    }
+    
+private:
+    map<string, vector<string>> itinerary;
+    vector<string> res;
+    
+    void findIti(string ap, vector<string> ans, int& k) {
+        ans.push_back(ap);
+        if (!k) res = ans;
+        if (!itinerary[ap].size()) return;
+        for (vector<string>::iterator it = itinerary[ap].begin(); it != itinerary[ap].end();) {
+            string city = *it;
+            it = itinerary[ap].erase(it);
+            findIti(city, ans, --k);
+            if (!k) return;
+            k++;
+            itinerary[ap].insert(it, city);
+            it++;
+        }
+    }
+};
