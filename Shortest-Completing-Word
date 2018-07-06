@@ -1,0 +1,41 @@
+/* NOTE:
+*   - Using ascii to get all the letters in the licensePlate 
+*     and transfer the uppercase ones to lowercase.
+*   - Using hashmap to check each word to see whether it 
+*     contain all the letters in licensePlate or not, return
+*     the shortest one.
+*/
+
+class Solution {
+public:
+    string shortestCompletingWord(string licensePlate, vector<string>& words) {
+        getLp(licensePlate);
+        for (auto w : words) {
+            unordered_map<char, int> dict;
+            for (auto c : w) {
+                if (dict[c] == 0) dict[c] = 1;
+                else dict[c]++;
+            }
+            for (int i = 0; i < lp.size(); i++) {
+                if (dict[lp[i]] == 0) break;
+                else dict[lp[i]]--;
+                if (i == lp.size() - 1) {
+                    if (ans == "") ans = w;
+                    else ans = ans.size() > w.size() ? w : ans;
+                }
+            }
+        }
+        return ans;
+    }
+    
+private:
+    string lp = "";
+    string ans = "";
+    
+    void getLp(string licensePlate) {
+        for (auto c : licensePlate) {
+            if (c - 'A' < 26 && c - 'A' >= 0) lp.push_back(c + 32);
+            if (c - 'a' < 26 && c - 'a' >= 0) lp.push_back(c);
+        }
+    }
+};
