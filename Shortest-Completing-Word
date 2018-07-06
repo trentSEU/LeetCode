@@ -6,6 +6,8 @@
 *     the shortest one.
 */
 
+Link on LeetCode: https://leetcode.com/problems/shortest-completing-word/description/
+
 class Solution {
 public:
     string shortestCompletingWord(string licensePlate, vector<string>& words) {
