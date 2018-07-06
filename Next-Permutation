@@ -1,7 +1,7 @@
 /* NOTE:
 *   - From right to left, find the first digit A which has bigger digit on its right
 *   - Chage the position of the found digit and the smallest bigger digit B on its right, 
-*     sort all digits after the found digit (A) in decending order.
+*     sort all digits after the original position of digit A in increasing order.
 *   - If can't find a digit has bigger digit on its right, sort all the digit.
 */
 
