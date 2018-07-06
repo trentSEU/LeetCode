@@ -1,0 +1,45 @@
+/* NOTE:
+*   - From right to left, find the first digit A which has bigger digit on its right
+*   - Chage the position of the found digit and the smallest bigger digit B on its right, 
+*     sort all digits after the found digit (A) in decending order.
+*   - If can't find a digit has bigger digit on its right, sort all the digit.
+*/
+
+Link on LeetCode: https://leetcode.com/problems/next-permutation/description/
+
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        if (nums.size() <= 1) return;
+        for (int i = nums.size() - 2; i >= 0; i--) {
+            int find = 0;
+            for (int j = i + 1; j < nums.size(); j++) {
+                if (nums[j] > nums[i]) {
+                    if (!find) find = j;
+                    else find = nums[j] < nums[find] ? j : find;
+                }
+            }
+            if (find) {
+                nums[find] = nums[find] ^ nums[i];
+                nums[i] = nums[find] ^ nums[i];
+                nums[find] = nums[find] ^ nums[i];
+                mySort(nums, i + 1);
+                break;
+            }
+            if (!i) mySort(nums, 0);
+        }
+    }
+    
+private:
+    void mySort(vector<int>& nums, int index) {
+        for (int i = index; i < nums.size() - 1; i++) {
+            for (int j = index; j < nums.size() - 1; j++) {
+                if (nums[j] > nums[j + 1]) {
+                    nums[j] = nums[j] ^ nums[j + 1];
+                    nums[j + 1] = nums[j] ^ nums[j + 1];
+                    nums[j] = nums[j] ^ nums[j + 1];
+                }
+            }
+        }
+    }
+};
