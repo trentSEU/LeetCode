@@ -5,6 +5,8 @@
 *    run into a run way, what we should do is go back and restore the state.
 */
 
+Link on LeetCode: https://leetcode.com/problems/reconstruct-itinerary/description/
+
 class Solution {
 public:
     vector<string> findItinerary(vector<pair<string, string>> tickets) {
