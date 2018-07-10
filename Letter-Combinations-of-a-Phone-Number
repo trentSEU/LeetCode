@@ -1,0 +1,38 @@
+/* NOTE:
+*  Link on LeetCode: https://leetcode.com/problems/letter-combinations-of-a-phone-number/description/
+*/
+
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        deque<string> que = {""};
+        
+        for (int i = 0; i < digits.size(); i++) {
+            int size = que.size();
+            for (int j = 0; j < size; j++) {
+                int index = digits[i] - '0' - 2;
+                string str = que.front();
+                que.pop_front();
+                for (auto c : dict[index]) {
+                    str.push_back(c);
+                    que.push_back(str);
+                    str.pop_back();
+                }
+            }
+        }
+        
+        vector<string> empty;
+        vector<string> ans(que.begin(), que.end());
+        return ans[0] == "" ? empty : ans;
+    }
+    
+private:
+    vector<vector<char>> dict = {{'a', 'b', 'c'}, 
+                                 {'d', 'e', 'f'}, 
+                                 {'g', 'h', 'i'}, 
+                                 {'j', 'k', 'l'}, 
+                                 {'m', 'n', 'o'}, 
+                                 {'p', 'q', 'r', 's'}, 
+                                 {'t', 'u', 'v'}, 
+                                 {'w', 'x', 'y', 'z'}};
+};
