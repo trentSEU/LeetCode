@@ -1,0 +1,32 @@
+/* NOTE:
+*  Link on LeetCode: https://leetcode.com/problems/spiral-matrix/description/
+*/
+
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        if (!matrix.size()) return ans;
+        int m = matrix.size(), n = matrix[0].size();
+        visited = vector<vector<bool>>(m, vector<bool>(n, false));
+        spiral(matrix, 0, 0, 0);
+        return ans;
+    }
+    
+private:
+    vector<int> ans;
+    vector<vector<bool>> visited;
+    vector<vector<int>> dirt = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    
+    void spiral(vector<vector<int>>& matrix, int x, int y, int d) {
+        ans.push_back(matrix[x][y]);
+        visited[x][y] = true;
+        int x1 = x + dirt[d][0], y1 = y + dirt[d][1], num = 4;
+        while (num-- > 0) {
+            if (x1 < 0 || x1 >= matrix.size() || y1 < 0 || y1 >= matrix[0].size() || visited[x1][y1]) {
+                d = ++d % 4;
+                x1 = x + dirt[d][0], y1 = y + dirt[d][1];
+            }
+            else spiral(matrix, x1, y1, d);
+        }
+    }
+};
