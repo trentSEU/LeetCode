@@ -1,0 +1,21 @@
+/* NOTE:
+*  Link on LeetCode: https://leetcode.com/problems/output-contest-matches/description/
+*/
+
+class Solution {
+public:
+    string findContestMatch(int n) {
+        deque<string> ans;
+        for (int i = 1; i <= n; i++) ans.push_back(to_string(i));
+        while (ans.size() > 1) {
+            int size = ans.size();
+            for (int i = 0; i < size; i++) {
+                if (i < size / 2) {
+                    ans.push_back("(" + ans[i] + "," + ans[size - i - 1] + ")");
+                }
+            }
+            for (int i = 0; i < size; i++) ans.pop_front();
+        }
+        return ans[0];
+    }
+};
