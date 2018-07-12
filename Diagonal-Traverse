@@ -1,0 +1,33 @@
+// Link on LeetCode: https://leetcode.com/problems/diagonal-traverse/description/
+
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        if (!matrix.size()) return ans;
+        bool up = true;
+        int rows = matrix.size(), columns = matrix[0].size(), count = 0, x = 0, y = 0;
+        while (count < rows * columns) {
+            if (x >= 0 && x < rows && y >= 0 && y < columns) ans.push_back(matrix[x][y]);
+            count++;
+            
+            if (!x && up) {
+                if (y == columns - 1) x++;
+                else y++;
+                up = false;
+            }
+            else if (y == columns - 1 && up) x++, up = false;
+            else if (!y && !up) {
+                if (x == rows - 1) y++;
+                else x++;
+                up = true;
+            }
+            else if (x == rows - 1 && !up) y++, up = true;
+            else {
+                if (up) x--, y++;
+                else x++, y--;
+            }
+        }
+        return ans;
+    }
+};
