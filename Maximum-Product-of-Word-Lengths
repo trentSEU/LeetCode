@@ -1,0 +1,29 @@
+// Link on LeetCode: https://leetcode.com/problems/maximum-product-of-word-lengths/description/
+
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        if (!words.size()) return 0;
+        sort(words.begin(), words.end(), cmp);
+        int ans = 0;
+        
+        for (int i = 0; i < words.size() - 1; i++) {
+            for (int j = i + 1; j < words.size(); j++) {
+                int num1 = 0, num2 = 0;
+                for (auto c : words[i]) num1 |= (1 << (c - 'a'));
+                for (auto c : words[j]) num2 |= (1 << (c - 'a'));
+                if (num1 & num2) continue;
+                ans = max(ans, (int)words[i].size() * (int)words[j].size());
+                if (words[i].size() * words[i].size() < ans) break;
+            }
+        }
+        
+        return ans;
+    }
+
+private:
+    static bool cmp(string s1, string s2) {
+        if (s1.size() == s2.size()) return s1 < s2;
+        return s1.size() > s2.size();
+    }
+};
