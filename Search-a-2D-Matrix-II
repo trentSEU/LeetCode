@@ -1,0 +1,70 @@
+Link on LeetCode: https://leetcode.com/problems/search-a-2d-matrix-ii/description/
+/*
+*  Version1: divide and conquer & binary search (TLE)
+*  - target can only exist in a matrix: matrix[0][0] <= target && target <= matrix[rows - 1][cols - 1];
+*/
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (!matrix.size() || !matrix[0].size()) return false;
+        int rows = matrix.size(), cols = matrix[0].size();
+        if (target < matrix[0][0] || target > matrix[rows - 1][cols - 1]) return false;
+        if (target == matrix[0][0] || target == matrix[rows - 1][cols - 1]) return true;
+        if (rows * cols == 1) {
+            if (matrix[0][0] != target) return false;
+            else return true;
+        }
+        
+        for (auto m : spliter(matrix)) {
+            if (searchMatrix(m, target)) return true;
+        }
+        
+        return false;
+    }
+    
+private:
+    vector<vector<vector<int>>>& spliter(vector<vector<int>>& matrix) {
+        vector<vector<vector<int>>> ans;
+        int rows = matrix.size(), cols = matrix[0].size(), midRow = rows / 2, midCol = cols / 2;
+        
+        vector<vector<int>> lu, ru, lb, rb;
+        for (int i = 0; i < rows; i++) {
+            if (i < midRow) {
+                vector<int> tmp1(matrix[i].begin(), matrix[i].begin() + midCol);
+                lu.push_back(tmp1);
+                vector<int> tmp2(matrix[i].begin() + midCol, matrix[i].end());
+                ru.push_back(tmp2);
+            }
+            else {
+                vector<int> tmp1(matrix[i].begin(), matrix[i].begin() + midCol);
+                lb.push_back(tmp1);
+                vector<int> tmp2(matrix[i].begin() + midCol, matrix[i].end());
+                rb.push_back(tmp2);
+            }
+        }
+        
+        ans = {lu, ru, lb, rb};
+        return ans;
+    }
+};
+
+/*
+*  version2: O(rows + cols)
+*  - if target < matrix[m][n], target can only exist on the left side of matrix[m][n],
+*    if target > matrix[m][n], target can only exist on the bottom right side of matrix[m][n];
+*/
+class Solution {
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (!matrix.size() || !matrix[0].size()) return false;
+        int rows = matrix.size(), cols = matrix[0].size();
+        
+        int i = 0, j = cols - 1;
+        while (i < rows && j >= 0) {
+            if (target == matrix[i][j]) return true;
+            else if (target < matrix[i][j]) j--;
+            else i++;
+        }
+        
+        return false;
+    }
+};
