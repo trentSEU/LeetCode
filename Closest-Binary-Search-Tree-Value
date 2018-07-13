@@ -1,0 +1,29 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ 
+ // Link on LeetCode: https://leetcode.com/problems/closest-binary-search-tree-value/description/
+ 
+class Solution {
+public:
+    int closestValue(TreeNode* root, double target) {
+        if (abs(root -> val - target) < minGap) {
+            minGap = abs(root -> val - target);
+            closest = root -> val;
+        }
+        if (root -> left) closestValue(root -> left, target);
+        if (root -> right) closestValue(root -> right, target);
+        
+        return closest;
+    }
+    
+private:
+    double minGap = 10000000000;
+    int closest;
+};
