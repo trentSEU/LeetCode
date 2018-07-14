@@ -1,0 +1,51 @@
+/**
+ * Definition for an interval.
+ * struct Interval {
+ *     int start;
+ *     int end;
+ *     Interval() : start(0), end(0) {}
+ *     Interval(int s, int e) : start(s), end(e) {}
+ * };
+ */
+ 
+ // Link on LeetCode: https://leetcode.com/problems/insert-interval/description/
+ 
+ 
+class Solution {
+public:
+    vector<Interval> insert(vector<Interval>& intervals, Interval newInterval) {
+        int start = newInterval.start, end = newInterval.end;
+        vector<Interval> ans;
+        bool merged = false;
+        Interval tmp(-1, -1);
+        for (int m = 0; m < intervals.size(); m++) {
+            Interval i = intervals[m];
+            if (i.end < start) {
+                ans.push_back(i);
+                // start > all the time in intervals
+                if (m == intervals.size() - 1) ans.push_back(newInterval), merged = true;
+                continue;
+            }
+            // end outside of the interval
+            if (i.start > end) {
+                // end < all the time in intervals
+                if (!m) ans.push_back(newInterval), merged = true;
+                // if no overlapping between newInterval and intervals, tmp.start is -1 here
+                else if (!merged) tmp.start = tmp.start == -1 ? start : tmp.start, tmp.end = end, ans.push_back(tmp), merged = true;
+                ans.push_back(i);
+                continue;
+            }
+            // start inside a interval
+            if (i.start <= start && start <= i.end && tmp.start == -1) tmp.start = i.start;
+            // start outside of interval
+            else if (start < i.start && tmp.start == -1) tmp.start = start;
+            // end inside a interval
+            if (i.start <= end && end <= i.end && tmp.end == -1) tmp.end = i.end, ans.push_back(tmp), merged = true;
+            
+            // end > all the time in intervals
+            if (m == intervals.size() - 1 && !merged) tmp.end = end, ans.push_back(tmp), merged = true;
+        }
+        if (ans.empty()) ans.push_back(newInterval);
+        return ans;
+    }
+};
