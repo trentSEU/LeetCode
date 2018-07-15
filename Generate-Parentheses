@@ -1,0 +1,30 @@
+/* NOTE:
+*  - Just keep the number of left brackets always no less than the number of right brackets.
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/generate-parentheses/description/
+
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        num = n;
+        generate(0, 0, "");
+        return ans;
+    }
+    
+private:
+    int num;
+    vector<string> ans;
+    
+    void generate(int left, int right, string par) {
+        if (par.size() == num * 2) {
+            ans.push_back(par);
+            return;
+        }
+        if (left > right) {
+            if (left < num) generate(left + 1, right, par + "(");
+            generate(left, right + 1, par + ")");
+        }
+        else generate(left + 1, right, par + "(");
+    }
+};
