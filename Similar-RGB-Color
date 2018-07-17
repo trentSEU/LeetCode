@@ -1,0 +1,37 @@
+/* NOTE:
+*  - Transfer the each of 3 RGB value to hex value, then traverse 
+*    from "00" to "ff" to count the minumun gap and construct
+*    ans.
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/similar-rgb-color/description/
+
+class Solution {
+public:
+    string similarRGB(string color) {
+        for (int i = 0; i < 10; i++) hex['0' + i] = i;
+        for (int i = 0; i < 6; i++) hex['a' + i] = 10 + i;
+        
+        string red = color.substr(1, 2), green = color.substr(3, 2), blue = color.substr(5, 2), ans = "#";
+        vector<string> col = {red, green, blue};
+        for (auto c : col) {
+            string res = "";
+            char tmp;
+            int minGap = INT_MAX;
+            for (auto p : hex) {
+                int num = p.second, gap = abs(num * 16 + num - hex[c[0]] * 16 - hex[c[1]]);
+                if (gap < minGap) {
+                    minGap = gap;
+                    tmp = p.first;
+                }
+            }
+            res.push_back(tmp), res.push_back(tmp);
+            ans += res;
+        }
+        
+        return ans;
+    }
+    
+private:
+    map<char, int> hex;
+};
