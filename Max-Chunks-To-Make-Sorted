@@ -1,0 +1,32 @@
+/* NOTE:
+*  - The restriction which decides whether a subarray can 
+*    be a chunk or not is that, after sorting the subarray, 
+*    all the numbers in this subarray should go to the right 
+*    position `(array[i] = i)`.
+*  - The strategy is, using two pointer to scan the `arr` once, 
+*    `i` is left of current trunk, `j` is right of current chunk, 
+*    if the minimum number in current chunk equals to `i` and 
+*    maximum number in current chunk equals to `j`, then current 
+*    chunk is a valid chunk, move `i` and `j` to next position.
+*/
+
+//Link on LeetCode: https://leetcode.com/problems/max-chunks-to-make-sorted/description/
+
+class Solution {
+public:
+    int maxChunksToSorted(vector<int>& arr) {
+        int chunks = 0;
+        for (int i = 0; i < arr.size();) {
+            int left = arr.size(), right = -1; // left saves min, right saves max
+            for (int j = i; j < arr.size(); j++) {
+                left = min(left, arr[j]), right = max(right, arr[j]);
+                if (left == i && right == j) {
+                    i = j + 1;
+                    chunks++;
+                    break;
+                }
+            }
+        }
+        return chunks;
+    }
+};
