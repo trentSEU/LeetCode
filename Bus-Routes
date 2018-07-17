@@ -1,0 +1,46 @@
+/* NOTE:
+*  - Using map `stops` to record the bus information for each stop.
+*  - Using `BFS`, first push the start stop into the queue. For each stop in the queue, we get its bus information according to `stops`, then we push the reachable stops for each bus into the queue.
+*  - There is no need to take a bus twice or visit a stop twice, so we use `visitedBus` and `visitedStop` to avoid repeated visits.
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/bus-routes/description/
+
+class Solution {
+public:
+    int numBusesToDestination(vector<vector<int>>& routes, int S, int T) {
+        map<int, vector<int>> stops;
+        for (int i = 0; i < routes.size(); i++) {
+            for (auto n : routes[i]) stops[n].push_back(i);
+        }
+        
+        int ans = 0;
+        queue<int> que;
+        que.push(S);
+        set<int> visitedStop;
+        set<int> visitedBus;
+        while (!que.empty()) {
+            int size = que.size();
+            set<int> tmp;
+            for (int i = 0; i < size; i++) {
+                int cur = que.front();
+                que.pop();
+                if (cur == T) return ans;
+                if (visitedStop.count(cur)) continue;
+                visitedStop.emplace(cur);
+                
+                for (auto bus : stops[cur]) {
+                    if (visitedBus.count(bus)) continue;
+                    visitedBus.emplace(bus);
+                    for (auto stop : routes[bus])
+                        tmp.emplace(stop);
+                }
+            }
+            for (auto s : tmp) que.push(s);
+            ans++;
+        }
+        
+        return -1;
+    }
+};
+```
