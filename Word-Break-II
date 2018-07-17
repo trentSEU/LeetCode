@@ -1,0 +1,47 @@
+// Link on LeetCode: https://leetcode.com/problems/word-break-ii/description/
+
+/* Version 1: Straightforward Recursive
+*  - Assuming the length of `s` is `n`, for each position in `[1, ..., n] `, split `s`, left part as `word`, right part as `remian`, if `word` exists in the `wordDict`, process `remain` in the same way recursively and concat the results.
+*  - Got TLE.
+*/
+
+class Solution {
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        vector<string> res;
+        for (int i = 1; i <= s.size(); i++) {
+            string word = s.substr(0, i), remain = s.substr(i);
+            if (find(wordDict.begin(), wordDict.end(), word) != wordDict.end()) {
+                if (!remain.size()) res.push_back(word);
+                else for (auto str : wordBreak(remain, wordDict)) res.push_back(word + " " + str);
+            }
+        }
+        return res;
+    }
+};
+
+---------------------------------------------------------------------
+
+/*Version2: Dynamic Programming
+* - Add memorization to the recursive solution.
+*/
+
+class Solution {
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        if (dict.count(s)) return dict[s];
+        vector<string> res;
+        for (int i = 1; i <= s.size(); i++) {
+            string word = s.substr(0, i), remain = s.substr(i);
+            if (find(wordDict.begin(), wordDict.end(), word) != wordDict.end()) {
+                if (!remain.size()) res.push_back(word);
+                else for (auto str : wordBreak(remain, wordDict)) res.push_back(word + " " + str);
+            }
+        }
+        dict[s] = res;
+        return res;
+    }
+
+private:
+    unordered_map<string, vector<string>> dict;
+};
