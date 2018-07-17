@@ -1,0 +1,65 @@
+/**
+ * // This is the robot's control interface.
+ * // You should not implement it, or speculate about its implementation
+ * class Robot {
+ *   public:
+ *     // Returns true if the cell in front is open and robot moves into the cell.
+ *     // Returns false if the cell in front is blocked and robot stays in the current cell.
+ *     bool move();
+ *
+ *     // Robot will stay in the same cell after calling turnLeft/turnRight.
+ *     // Each turn will be 90 degrees.
+ *     void turnLeft();
+ *     void turnRight();
+ *
+ *     // Clean the current cell.
+ *     void clean();
+ * };
+ */
+
+// NOTE: backtracking and DFS
+
+// refer to: https://leetcode.com/problems/robot-room-cleaner/discuss/139057/Very-easy-to-understand-Java-solution
+
+class Solution {
+public:
+    void cleanRoom(Robot& robot) {
+        // using relative position
+        set<vector<int>> visited;
+        backtrack(visited, 0, 0, 0, robot);
+    }
+    
+private:
+    // 0: up, 90: right, 180: down, 270: left
+    void backtrack(set<vector<int>>& visited, int i, int j, int dir, Robot& robot) {
+        vector<int> tmp = {i, j};
+        if (visited.count(tmp)) return;
+        visited.emplace(tmp);
+        robot.clean();
+        
+        for (int m = 0; m < 4; m++) {
+            dir = (dir + 90) % 360;
+            int i_ = i, j_ = j;
+            
+            // be sure to use `break` after each case
+            switch (dir) {
+                case 0: i_--;
+                        break;
+                case 90: j_++;
+                         break;
+                case 180: i_++;
+                          break;
+                case 270: j_--;
+                          break;
+            }
+            robot.turnRight();
+            if (robot.move()) {
+                backtrack(visited, i_, j_, dir, robot);
+                // backtracking: move to the last cell and face to the last direction
+                robot.turnRight(), robot.turnRight();
+                robot.move();
+                robot.turnLeft(), robot.turnLeft();
+            }
+        }
+    }
+};
