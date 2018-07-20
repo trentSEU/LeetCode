@@ -1,0 +1,28 @@
+/* NOTE: DP
+*  if s[i] == s[j] && s[i + 1 : j - 1] is a palindrome: dp[i][j] = dp[i + 1][j - 1] + 2
+*  else dp[i][j] = max(dp[i + 1][j], dp[i][j - 1]);
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/longest-palindromic-substring/description/
+
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n = s.size(), num = INT_MIN;
+        string ans;
+        vector<vector<int>> dp(n, vector<int>(n, 0));
+        for (int m = 0; m < n; m++) {
+            for (int i = 0, j = m; i < n && j < n; i++, j++) {
+                if (i == j) dp[i][j] = 1;
+                else if (s[i] == s[j] && dp[i + 1][j - 1] == j - i -1) dp[i][j] = dp[i + 1][j - 1] + 2;
+                else dp[i][j] = max(dp[i + 1][j], dp[i][j - 1]);
+                if (dp[i][j] > num) {
+                    cout << i << j << endl;
+                    num = dp[i][j];
+                    ans = s.substr(i, num);
+                }
+            }
+        }
+        return ans;
+    }
+};
