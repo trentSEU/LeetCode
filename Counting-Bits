@@ -1,0 +1,21 @@
+/* NOTE: DP
+*  dp[n] = dp[n - m] + 1, m is the closest power of 2 to n and m < n
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/counting-bits/description/
+
+// refer to: https://leetcode.com/problems/counting-bits/discuss/151895/Easy-C++-O(n)-solution-with-explanation
+
+class Solution {
+public:
+    vector<int> countBits(int num) {
+        vector<int> dp = {0};
+        if (!num) return dp;
+        dp = vector<int>(num + 1, 0);
+        for (int i = 1, cur; i <= num; i++) {
+            if (!(i & (i - 1))) cur = i;
+            dp[i] = dp[i - cur] + 1;
+        }
+        return dp;
+    }
+};
