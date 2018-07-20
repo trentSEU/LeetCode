@@ -1,5 +1,5 @@
 /* NOTE: DP - one dimension
-*  dp[n] = dp[n - 1] + dp[n - 2] // 1 step + 2 steps
+*  dp[n] = dp[n - 1] + dp[n - 2] // 1 step + 2 steps 
 */
 
 Link on LeetCode: https://leetcode.com/problems/climbing-stairs/description/
