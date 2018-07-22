@@ -2,6 +2,8 @@
 *  dp[i][j] = min(dp[i - 1][j - 1], dp[i - 1][j]) + triangle[i][j]
 */
 
+//Link on LeetCode: https://leetcode.com/problems/triangle/description/
+
 class Solution {
 public:
     int minimumTotal(vector<vector<int>>& triangle) {
