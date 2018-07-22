@@ -1,0 +1,54 @@
+/* NOTE: DP
+*  - use the last balloon to burst to devide nums into two subarray.
+*  - dp[left][right] is the biggest value for nums[left : right], you will not burst left and right
+*  
+*  - Base-case is: when left+1 == right, then return 0. A.k.a. there 
+*    are no balloons in the middle to pop. So these base case values 
+*    are already stored in our DP array!
+*  - The next case is when we have only 1 balloon between left and right. 
+*    k represents the distance between left and right, and k = 2 means 
+*    that there is one balloon between left and right.
+*  - So first we iterate through the entire array and find every result 
+*    when there is just 1 ballon between left and right, and when that's 
+*    finished, increase the distance k between left and right.
+*  - dp[left][i] and dp[i][right]) when k=2 are equal to the base cases! 
+*    Equals 0! We are always referencing values from the previous iterations.
+*  - Keep increasing the number of balloons in between left and right, 
+*    until we reach the final case left = 0 and right=n-1
+*
+*  refer to: https://leetcode.com/problems/burst-balloons/discuss/76228/Share-some-analysis-and-explanations
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/burst-balloons/description/
+
+class Solution {
+public:
+    int maxCoins(vector<int>& nums) {
+        int n = 1;
+        vector<int> inums(nums.size() + 2, 0);
+        for (auto num : nums) inums[n++] = num;
+        inums[0] = 1, inums[n++] = 1;
+        
+        int dp[n][n] = {};
+        // k < n -> k <= n - 1 -> there are n - 2 balloons between left and right
+        for (int k = 2; k < n; k++) {
+            for (int left = 0; left < n - k; left++) {
+                int right = left + k;
+                // i is the index of the last balloon to burst
+                for (int i = left + 1; i < right; i++) {
+                    dp[left][right] = max(dp[left][right],
+                                          // left and right won't be burst    left and i won't    i and right won't
+                                          inums[left] * inums[i] * inums[right] + dp[left][i] + dp[i][right]);
+                }
+            }
+        }
+        
+        // for (int i = 0; i < n; i++) {
+        //     for (int j = 0; j < n; j++) {
+        //         cout << dp[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+        return dp[0][n - 1];
+    }
+};
