@@ -1,0 +1,32 @@
+/* NOTE: DP
+*  dp[n] = min(dp[i] * 2, dp[i] * 3, dp[i] * 5), for each i < n
+*/
+
+// refer to https://leetcode.com/problems/ugly-number-ii/discuss/153324/Simple-O(n)-DP-solution-with-explanation
+
+// Link on LeetCode: https://leetcode.com/problems/ugly-number-ii/description/
+
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        if (!n) return 0;
+        int dp[n] = {};
+        dp[0] = 1;
+        
+        deque<int> d2 = {2}, d3 = {3}, d5 = {5};
+        for (int i = 1; i < n; i++) {
+            if (d2.front() <= d3.front() && d2.front() <= d5.front())
+                dp[i] = d2.front(), d2.pop_front();
+            else if (d3.front() <= d2.front() && d3.front() <= d5.front())
+                dp[i] = d3.front(), d3.pop_front();
+            else if (d5.front() <= d2.front() && d5.front() <= d3.front())
+                dp[i] = d5.front(), d5.pop_front();
+            if (d2.front() == dp[i]) d2.pop_front();
+            if (d3.front() == dp[i]) d3.pop_front();
+            if (d5.front() == dp[i]) d5.pop_front();
+            d2.push_back(dp[i] * 2), d3.push_back(dp[i] * 3), d5.push_back(dp[i] * 5);
+        }
+        
+        return dp[n - 1];
+    }
+};
