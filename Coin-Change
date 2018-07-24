@@ -1,0 +1,27 @@
+/* NOTE: DP
+*  - dp[n] = min(dp[n - i]) + 1, for each i in coins
+*  - somt amount can't get from a specific coins array, thus the valid amounts
+*    are not consecutive, so we choose to use map instead of array.
+*/
+
+// Link on LeetCode: https://leetcode.com/problems/coin-change/description/
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        unordered_map<int, int> dp;
+        dp[0] = 0;
+        
+        for (int i = 1; i <= amount; i++) {
+            for (auto c : coins) {
+                if (i - c >= 0 && dp.count(i - c)) {
+                    if (!dp.count(i)) dp[i] = dp[i - c] + 1;
+                    else dp[i] = min(dp[i], dp[i - c] + 1);
+                }
+            }
+        }
+        
+        if (!dp.count(amount)) return -1;
+        return dp[amount];
+    }
+};
