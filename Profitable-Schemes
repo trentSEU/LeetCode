@@ -1,0 +1,25 @@
+// refer to https://leetcode.com/problems/profitable-schemes/discuss/154617/C++JavaPython-DP
+// Thats because dp[i][j] represents the number of combinations before committing this new crime. Say for example, G=5, P=3, the new crime has g= 2, p=1, since you MUST have it, the problem downgrades to dp[3][2], which you already solved.
+
+// Link on LeetCode: https://leetcode.com/problems/profitable-schemes/description/
+
+class Solution {
+public:
+    int profitableSchemes(int G, int P, vector<int>& group, vector<int>& profit) {
+        vector<vector<int>> dp(P + 1, vector<int>(G + 1, 0));
+        dp[0][0] = 1;
+        int res = 0, mod = 1000000007;
+        
+        for (int k = 0; k < group.size(); k++) {
+            int p = profit[k], g = group[k];
+            // every p, g would update the whole dp matrix
+            for (int i = P; i >= 0; i--) {
+                for (int j = G - g; j >= 0; j--)
+                    dp[min(i + p, P)][j + g] = (dp[min(i + p, P)][j + g] + dp[i][j]) % mod;
+            }
+        }
+        
+        for (int x : dp[P]) res = (res + x) % mod;
+        return res;
+    }
+};
