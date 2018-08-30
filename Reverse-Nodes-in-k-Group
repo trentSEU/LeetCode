@@ -1,0 +1,55 @@
+ - refer to notability for more information (graph).
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        if (k == 1 || !head) return head;
+        int temp;
+        ListNode *Head = new ListNode(0);
+        Head -> next = head;
+				// pre-node of current group
+        ListNode *start = Head;
+				// end indicates the end position of current, which is the first element of next group
+        ListNode *end = start -> next;
+				// left and right used to reverse inner-group nodes
+        ListNode *left = start -> next;
+        ListNode *right = left -> next;
+				// save next position for right
+        ListNode *node;
+				// save the last element of current group after reversed, which is the first element before reverse
+        ListNode *tail;
+        
+        while (true) {
+            temp = k;
+            while (temp-- > 0) {
+                // end is NULL means there aren't enough nodes for a group
+								// after reverse, head is not the frist element anymore, so you need to use Head -> next
+                if (!end) return Head -> next;
+                end = end -> next;
+            }
+            tail = left;
+            while (right != end) {
+                node = right -> next;
+                right -> next = left;
+                left = right;
+                right = node;
+            }
+            start -> next -> next = end;
+            start -> next = left;
+            if (!end) return Head -> next;
+            
+            start = tail;
+            end = start -> next;
+            left = start -> next;
+            right = left -> next;
+        }
+        return Head -> next;
+    }
+};
